@@ -14,13 +14,14 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <lombok.version>1.18.28</lombok.version>
         <gson.version>2.10.1</gson.version>
+        <jupite.version>5.10.0</jupite.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>5.10.0</version>
+            <version>${jupite.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
