@@ -1,7 +1,10 @@
 package com.sivan.crudapp;
 
+import com.sivan.crudapp.context.ApplicationContext;
+
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello");
+        var context = new ApplicationContext();
+        context.start();
     }
 }
