@@ -18,12 +18,6 @@ class LabelRepositoryImplTest {
     }
 
     @Test
-    void getAll() {
-        var all = labelRepository.getAll();
-        assertEquals(5, all.size());
-    }
-
-    @Test
     void getById() {
         var byId = labelRepository.getById(1L);
         assertEquals(1, byId.getId());

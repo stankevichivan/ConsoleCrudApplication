@@ -2,9 +2,9 @@ package com.sivan.crudapp.repository.impl;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.sivan.crudapp.repository.LabelRepository;
 import com.sivan.crudapp.model.Label;
 import com.sivan.crudapp.model.Status;
-import com.sivan.crudapp.repository.LabelRepository;
 
 import java.io.IOException;
 import java.nio.file.Files;

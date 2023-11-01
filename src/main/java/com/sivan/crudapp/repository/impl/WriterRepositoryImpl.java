@@ -3,10 +3,10 @@ package com.sivan.crudapp.repository.impl;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.sivan.crudapp.model.Status;
-import com.sivan.crudapp.model.Writer;
 import com.sivan.crudapp.repository.WriterRepository;
 import com.sivan.crudapp.repository.adapter.LocalDateTypeAdapter;
+import com.sivan.crudapp.model.Status;
+import com.sivan.crudapp.model.Writer;
 
 import java.io.IOException;
 import java.nio.file.Files;
