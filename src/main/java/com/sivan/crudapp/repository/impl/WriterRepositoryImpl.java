@@ -36,7 +36,7 @@ public class WriterRepositoryImpl implements WriterRepository {
                     writer.setId(nextId + 1);
                     writer.setStatus(Status.ACTIVE);
                 }, () -> {
-                    writer.setId(1);
+                    writer.setId(1L);
                     writer.setStatus(Status.ACTIVE);
                 });
         writers.add(writer);

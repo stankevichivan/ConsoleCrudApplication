@@ -32,7 +32,7 @@ public class PostRepositoryImpl implements PostRepository {
         var posts = getAll();
         posts.stream()
                 .map(Post::getId).max(Long::compareTo)
-                .ifPresentOrElse(nextId -> post.setId(nextId + 1), () -> post.setId(1));
+                .ifPresentOrElse(nextId -> post.setId(nextId + 1), () -> post.setId(1L));
         posts.add(post);
         saveAll(posts);
         return post;

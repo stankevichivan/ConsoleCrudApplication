@@ -31,7 +31,7 @@ public class LabelRepositoryImpl implements LabelRepository {
                     label.setId(nextId + 1);
                     label.setStatus(Status.ACTIVE);
                 }, () -> {
-                    label.setId(1);
+                    label.setId(1L);
                     label.setStatus(Status.ACTIVE);
                 });
         labels.add(label);

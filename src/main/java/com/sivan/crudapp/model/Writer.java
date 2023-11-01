@@ -10,7 +10,7 @@ import java.util.List;
 @Setter
 @Builder
 public class Writer {
-    private long id;
+    private Long id;
     private String firstName;
     private String lastName;
     private Status status;

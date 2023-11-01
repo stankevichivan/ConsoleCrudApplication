@@ -11,7 +11,7 @@ import java.util.List;
 @Setter
 @Builder
 public class Post {
-    private long id;
+    private Long id;
     private String content;
     private LocalDateTime created;
     private LocalDateTime updated;
