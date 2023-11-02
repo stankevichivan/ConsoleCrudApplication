@@ -12,9 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class LabelJDBCRepositoryImpl implements JDBCLabelRepository {
+public class JDBCLabelRepositoryImpl implements JDBCLabelRepository {
 
-    private static LabelJDBCRepositoryImpl INSTANCE;
+    private static JDBCLabelRepositoryImpl INSTANCE;
 
     private static final String FIND_ALL = """
             select id, name from labels
@@ -51,12 +51,12 @@ public class LabelJDBCRepositoryImpl implements JDBCLabelRepository {
             update labels set post_id = null where id = ?
             """;
 
-    private LabelJDBCRepositoryImpl() {
+    private JDBCLabelRepositoryImpl() {
     }
 
-    public static synchronized LabelJDBCRepositoryImpl getInstance() {
+    public static synchronized JDBCLabelRepositoryImpl getInstance() {
         if (INSTANCE == null) {
-            INSTANCE = new LabelJDBCRepositoryImpl();
+            INSTANCE = new JDBCLabelRepositoryImpl();
         }
         return INSTANCE;
     }

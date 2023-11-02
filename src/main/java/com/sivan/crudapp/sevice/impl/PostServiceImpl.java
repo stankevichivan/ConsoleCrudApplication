@@ -3,7 +3,7 @@ package com.sivan.crudapp.sevice.impl;
 import com.sivan.crudapp.model.Post;
 import com.sivan.crudapp.repository.JDBCPostRepository;
 import com.sivan.crudapp.repository.impl.JDBCPostRepositoryImpl;
-import com.sivan.crudapp.repository.impl.LabelJDBCRepositoryImpl;
+import com.sivan.crudapp.repository.impl.JDBCLabelRepositoryImpl;
 import com.sivan.crudapp.sevice.PostService;
 
 import java.util.List;
@@ -42,23 +42,23 @@ public class PostServiceImpl implements PostService {
     @Override
     public Optional<Post> getById(Long id) {
         var result = postRepository.getById(id);
-        result.ifPresent(post -> post.setLabels(LabelJDBCRepositoryImpl.getInstance().getAllByPostId(post.getId())));
+        result.ifPresent(post -> post.setLabels(JDBCLabelRepositoryImpl.getInstance().getAllByPostId(post.getId())));
         return result;
     }
 
     @Override
     public List<Post> getAll() {
         var posts = postRepository.getAll();
-        posts.forEach(post -> post.setLabels(LabelJDBCRepositoryImpl.getInstance().getAllByPostId(post.getId())));
+        posts.forEach(post -> post.setLabels(JDBCLabelRepositoryImpl.getInstance().getAllByPostId(post.getId())));
         return posts;
     }
 
     @Override
     public Post addLabelToPost(Long postId, Long labelId) {
-        var added = LabelJDBCRepositoryImpl.getInstance().addLabelToPost(postId, labelId);
+        var added = JDBCLabelRepositoryImpl.getInstance().addLabelToPost(postId, labelId);
         if (added) {
             var post = getById(postId).orElse(null);
-            LabelJDBCRepositoryImpl.getInstance().getById(labelId).ifPresent(label -> {
+            JDBCLabelRepositoryImpl.getInstance().getById(labelId).ifPresent(label -> {
                 if (Objects.nonNull(post) && Objects.nonNull(post.getLabels())) {
                     post.getLabels().add(label);
                 }
@@ -70,6 +70,6 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void deleteLabelFromPost(Long labelId) {
-        LabelJDBCRepositoryImpl.getInstance().deleteLabelFromPost(labelId);
+        JDBCLabelRepositoryImpl.getInstance().deleteLabelFromPost(labelId);
     }
 }
