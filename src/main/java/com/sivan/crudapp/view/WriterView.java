@@ -46,18 +46,18 @@ public class WriterView {
     private void deletePostFromWriter(BufferedReader reader) throws IOException {
         var postId = PostView.getPostId(reader);
         var writerId = getWriterId(reader);
-        controller.deletePostFromWriter(postId, writerId);
+        // controller.deletePostFromWriter(postId, writerId);
     }
 
     private void addPostToWriter(BufferedReader reader) throws IOException {
         var postId = PostView.getPostId(reader);
         var writerId = getWriterId(reader);
-        System.out.println(controller.addPostToWriter(postId, writerId));
+        // System.out.println(controller.addPostToWriter(postId, writerId));
     }
 
     private void deleteWriterById(BufferedReader reader) throws IOException {
         var writerId = getWriterId(reader);
-        controller.deleteWriterById(writerId).ifPresentOrElse(System.out::println, () -> System.out.println("Writer does not exists"));
+        System.out.println(controller.deleteWriterById(writerId));
     }
 
     private void updateWriter(BufferedReader reader) throws IOException {
@@ -79,7 +79,9 @@ public class WriterView {
 
     private void getWriterById(BufferedReader reader) throws IOException {
         var writerId = getWriterId(reader);
-        controller.getWriterById(writerId).ifPresentOrElse(System.out::println, () -> System.out.println("Writer does not exists"));
+        controller.getWriterById(writerId)
+                .ifPresentOrElse(System.out::println,
+                        () -> System.out.println("Writer does not exists"));
     }
 
     private void createWriter(BufferedReader reader) throws IOException {

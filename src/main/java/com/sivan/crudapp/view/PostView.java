@@ -49,10 +49,9 @@ public class PostView {
     }
 
     private void deleteLabelFromPost(BufferedReader reader) throws IOException {
-        var postId = getPostId(reader);
         System.out.println(ENTER_LABEL_ID);
         var labelId = reader.readLine();
-        postController.deleteLabelFromPost(postId, Long.valueOf(labelId));
+        postController.deleteLabelFromPost(Long.valueOf(labelId));
     }
 
     private void addLabelToPost(BufferedReader reader) throws IOException {
@@ -64,7 +63,7 @@ public class PostView {
 
     private void deletePostById(BufferedReader reader) throws IOException {
         var postId = getPostId(reader);
-        postController.deletePostById(postId).ifPresentOrElse(System.out::println, () -> System.out.println("Post does not exists"));
+        System.out.println(postController.deletePostById(postId));
     }
 
     private void updatePost(BufferedReader reader) throws IOException {
@@ -86,7 +85,9 @@ public class PostView {
 
     private void getPostById(BufferedReader reader) throws IOException {
         var postId = getPostId(reader);
-        postController.getPostById(postId).ifPresentOrElse(System.out::println, () -> System.out.println("Post does not exists"));
+        postController.getPostById(postId)
+                .ifPresentOrElse(System.out::println,
+                        () -> System.out.println("Post does not exists"));
     }
 
     private void createPost(BufferedReader reader) throws IOException {

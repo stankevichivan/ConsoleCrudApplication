@@ -1,67 +1,45 @@
 package com.sivan.crudapp.controller;
 
-import com.sivan.crudapp.model.Label;
 import com.sivan.crudapp.model.Post;
-import com.sivan.crudapp.repository.LabelRepository;
-import com.sivan.crudapp.repository.PostRepository;
-import com.sivan.crudapp.repository.impl.LabelRepositoryImpl;
-import com.sivan.crudapp.repository.impl.PostRepositoryImpl;
+import com.sivan.crudapp.sevice.PostService;
+import com.sivan.crudapp.sevice.impl.PostServiceImpl;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class PostController {
-    private final PostRepository repository;
-    private final LabelRepository labelRepository;
+    private final PostService service;
 
     public PostController() {
-        repository = new PostRepositoryImpl();
-        labelRepository = new LabelRepositoryImpl();
+        service = new PostServiceImpl();
     }
 
     public Post createPost(Post post) {
-        return repository.create(post);
+        return service.create(post);
     }
 
     public List<Post> getAllPosts() {
-        return repository.getAll();
+        return service.getAll();
     }
 
     public Optional<Post> getPostById(Long postId) {
-        return Optional.ofNullable(repository.getById(postId));
+        return service.getById(postId);
     }
 
     public void updatePost(Post post) {
-        repository.update(post);
+        service.update(post);
 
     }
 
-    public Optional<Object> deletePostById(Long postId) {
-        return Optional.ofNullable(repository.deleteById(postId));
+    public boolean deletePostById(Long postId) {
+        return service.delete(postId);
     }
 
     public Post addLabelToPost(Long postId, Long labelId) {
-        var label = labelRepository.getById(labelId);
-        var post = repository.getById(postId);
-        if (label == null || post == null) {
-            return null;
-        }
-        if (post.getLabels() == null) {
-            List<Label> labels = new ArrayList<>();
-            labels.add(label);
-            post.setLabels(labels);
-            updatePost(post);
-            return post;
-        }
-        post.getLabels().add(label);
-        updatePost(post);
-        return post;
+        return service.addLabelToPost(postId, labelId);
     }
 
-    public void deleteLabelFromPost(Long postId, Long labelId) {
-        var post = repository.getById(postId);
-        post.setLabels(post.getLabels().stream().filter(label -> label.getId() != labelId).toList());
-        updatePost(post);
+    public void deleteLabelFromPost(Long labelId) {
+        service.deleteLabelFromPost(labelId);
     }
 }

@@ -50,8 +50,7 @@ public class LabelView {
     private void deleteLabelById(BufferedReader reader) throws IOException {
         System.out.println(ENTER_LABEL_ID);
         var labelId = reader.readLine();
-        labelController.deleteLabelById(Long.valueOf(labelId))
-                .ifPresentOrElse(System.out::println, () -> System.out.println("Label does not exists"));
+        System.out.println(labelController.deleteLabelById(Long.valueOf(labelId)));
     }
 
     private void updateLabel(BufferedReader reader) throws IOException {
@@ -59,7 +58,8 @@ public class LabelView {
         var labelId = reader.readLine();
         System.out.println(ENTER_NAME);
         var labelName = reader.readLine();
-        labelController.updateLabel(Label.builder().id(Long.parseLong(labelId)).name(labelName).build());
+        System.out.println(
+                labelController.updateLabel(Label.builder().id(Long.parseLong(labelId)).name(labelName).build()));
     }
 
     private void getLabelById(BufferedReader reader) throws IOException {

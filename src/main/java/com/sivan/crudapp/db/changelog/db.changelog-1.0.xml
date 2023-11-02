@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <changeSet id="2023-11-01-create-table-writers" author="stankevich_id">
+    <changeSet id="2023-11-01-create-table-writers" author="stankevich_id" runOnChange="true">
         <createTable tableName="writers"
                      schemaName="java"
                      remarks="Table with writers">
@@ -23,14 +23,10 @@
                     type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="status"
-                    type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
         </createTable>
     </changeSet>
 
-    <changeSet author="stankevich_id" id="2023-11-01-create-table-posts">
+    <changeSet author="stankevich_id" id="2023-11-01-create-table-posts" runOnChange="true">
         <createTable tableName="posts">
             <column name="id" type="int" autoIncrement="true">
                 <constraints primaryKey="true"/>
@@ -44,7 +40,7 @@
             <column name="updated" type="TIMESTAMP">
                 <constraints nullable="false"/>
             </column>
-            <column name="postStatus" type="varchar(255)">
+            <column name="status" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
             <column name="writer_id" type="int"/>
@@ -60,15 +56,12 @@
                                  referencedTableSchemaName="java"/>
     </changeSet>
 
-    <changeSet author="stankevich_id" id="2023-11-01-create-table-labels">
+    <changeSet author="stankevich_id" id="2023-11-01-create-table-labels" runOnChange="true">
         <createTable tableName="labels">
             <column name="id" type="int" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
             <column name="name" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="status" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
             <column name="post_id" type="int"/>

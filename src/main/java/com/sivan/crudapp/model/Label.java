@@ -10,14 +10,11 @@ import lombok.Setter;
 public class Label {
     private Long id;
     private String name;
-    private Status status;
 
     @Override
     public String toString() {
         return "Label{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", status=" + status +
-                '}';
+               "id=" + id +
+               ", name='" + name + '}';
     }
 }

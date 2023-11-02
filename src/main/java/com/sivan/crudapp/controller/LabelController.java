@@ -1,41 +1,41 @@
 package com.sivan.crudapp.controller;
 
 import com.sivan.crudapp.model.Label;
-import com.sivan.crudapp.repository.LabelRepository;
-import com.sivan.crudapp.repository.impl.LabelRepositoryImpl;
+import com.sivan.crudapp.sevice.LabelService;
+import com.sivan.crudapp.sevice.impl.LabelServiceImpl;
 
 import java.util.List;
 import java.util.Optional;
 
 public class LabelController {
 
-    private final LabelRepository repository;
+    private final LabelService service;
 
     public LabelController() {
-        repository = new LabelRepositoryImpl();
+        this.service = new LabelServiceImpl();
     }
 
     public void deleteAllLabels() {
-        repository.deleteAll();
+        service.deleteAll();
     }
 
-    public Optional<Label> deleteLabelById(Long labelId) {
-        return Optional.ofNullable(repository.deleteById(labelId));
+    public boolean deleteLabelById(Long labelId) {
+        return service.delete(labelId);
     }
 
-    public void updateLabel(Label label) {
-        repository.update(label);
+    public boolean updateLabel(Label label) {
+        return service.update(label);
     }
 
     public Optional<Label> getLabelById(Long labelId) {
-        return Optional.ofNullable(repository.getById(labelId));
+        return service.getById(labelId);
     }
 
     public List<Label> getAllLabels() {
-        return repository.getAll();
+        return service.getAll();
     }
 
     public Label createLabel(Label label) {
-        return repository.create(label);
+        return service.create(label);
     }
 }

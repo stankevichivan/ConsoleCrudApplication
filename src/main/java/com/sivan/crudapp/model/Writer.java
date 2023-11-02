@@ -13,17 +13,15 @@ public class Writer {
     private Long id;
     private String firstName;
     private String lastName;
-    private Status status;
     private List<Post> posts;
 
     @Override
     public String toString() {
         return "Writer{" +
-                "id=" + id +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", status=" + status +
-                ", posts=" + posts +
-                '}';
+               "id=" + id +
+               ", firstName='" + firstName + '\'' +
+               ", lastName='" + lastName + '\'' +
+               ", posts=" + posts +
+               '}';
     }
 }
