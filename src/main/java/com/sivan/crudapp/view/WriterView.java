@@ -45,14 +45,13 @@ public class WriterView {
 
     private void deletePostFromWriter(BufferedReader reader) throws IOException {
         var postId = PostView.getPostId(reader);
-        var writerId = getWriterId(reader);
-        // controller.deletePostFromWriter(postId, writerId);
+        controller.deletePostFromWriter(postId);
     }
 
     private void addPostToWriter(BufferedReader reader) throws IOException {
         var postId = PostView.getPostId(reader);
         var writerId = getWriterId(reader);
-        // System.out.println(controller.addPostToWriter(postId, writerId));
+        System.out.println(controller.addPostToWriter(postId, writerId));
     }
 
     private void deleteWriterById(BufferedReader reader) throws IOException {

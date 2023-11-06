@@ -20,10 +20,14 @@ public class JDBCPostRepositoryImpl implements JDBCPostRepository {
             insert into posts (content, created, updated, status) VALUES (?, ?, ?, ?);
             """;
     public static final String FIND_ALL = """
-            select id, id, content, created, updated, status from posts
+            select id, content, created, updated, status from posts
             """;
     public static final String FIND_BY_ID = FIND_ALL + """
             where id = ?
+            """;
+
+    private static final String FIND_ALL_BY_POST_ID = FIND_ALL + """
+            where writer_id = ?
             """;
     public static final String UPDATE = """
             update posts set content = ?,
@@ -37,6 +41,14 @@ public class JDBCPostRepositoryImpl implements JDBCPostRepository {
             """;
     public static final String DELETE_ALL = """
             truncate table posts
+            """;
+
+    private static final String DELETE_POST_FROM_WRITER = """
+            update posts set writer_id = null where id = ?
+            """;
+
+    private static final String ADD_POST_TO_WRITER = """
+            update posts set writer_id = ? where id = ?
             """;
 
     @Override
@@ -132,5 +144,44 @@ public class JDBCPostRepositoryImpl implements JDBCPostRepository {
                 .updated(resultSet.getTimestamp("updated").toLocalDateTime())
                 .postStatus(PostStatus.valueOf(resultSet.getString("status")))
                 .build();
+    }
+
+    @Override
+    public boolean addPostToWriter(Long postId, Long writerId) {
+        try (var connection = ConnectionPool.get();
+             var preparedStatement = connection.prepareStatement(ADD_POST_TO_WRITER)) {
+            preparedStatement.setLong(1, writerId);
+            preparedStatement.setLong(2, postId);
+            return preparedStatement.executeUpdate() > 0;
+        } catch (SQLException e) {
+            throw new JDBCRepositoryException(e);
+        }
+    }
+
+    @Override
+    public List<Post> getAllByWriterId(Long writerId) {
+        try (var connection = ConnectionPool.get();
+             var preparedStatement = connection.prepareStatement(FIND_ALL_BY_POST_ID)) {
+            preparedStatement.setLong(1, writerId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            var posts = new ArrayList<Post>();
+            while (resultSet.next()) {
+                posts.add(createPost(resultSet));
+            }
+            return posts;
+        } catch (SQLException e) {
+            throw new JDBCRepositoryException(e);
+        }
+    }
+
+    @Override
+    public void deletePostFromWriter(Long postId) {
+        try (var connection = ConnectionPool.get();
+             var preparedStatement = connection.prepareStatement(DELETE_POST_FROM_WRITER)) {
+            preparedStatement.setLong(1, postId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new JDBCRepositoryException(e);
+        }
     }
 }
