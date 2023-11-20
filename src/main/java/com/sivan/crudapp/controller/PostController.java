@@ -39,7 +39,7 @@ public class PostController {
         return service.addLabelToPost(postId, labelId);
     }
 
-    public void deleteLabelFromPost(Long labelId) {
-        service.deleteLabelFromPost(labelId);
+    public void deleteLabelFromPost(Long labelId, Long postId) {
+        service.deleteLabelFromPost(labelId, postId);
     }
 }

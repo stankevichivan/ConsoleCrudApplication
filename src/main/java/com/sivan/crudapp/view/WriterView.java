@@ -45,7 +45,9 @@ public class WriterView {
 
     private void deletePostFromWriter(BufferedReader reader) throws IOException {
         var postId = PostView.getPostId(reader);
-        controller.deletePostFromWriter(postId);
+        System.out.println("enter writer Id");
+        var writerId = Long.parseLong(reader.readLine());
+        controller.deletePostFromWriter(postId, writerId);
     }
 
     private void addPostToWriter(BufferedReader reader) throws IOException {
@@ -65,11 +67,11 @@ public class WriterView {
         var firstName = reader.readLine();
         System.out.println("Enter writer last Name");
         var lastName = reader.readLine();
-        controller.updateWriter(Writer.builder().
-                id(writerId)
-                .firstName(firstName)
-                .lastName(lastName)
-                .build());
+        var writer = new Writer();
+        writer.setId(writerId);
+        writer.setFirstName(firstName);
+        writer.setLastName(lastName);
+        controller.updateWriter(writer);
     }
 
     private void getAllWriters() {
@@ -88,11 +90,10 @@ public class WriterView {
         var firstName = reader.readLine();
         System.out.println("Enter writer last Name");
         var lastName = reader.readLine();
-
-        System.out.println(controller.createWriter(Writer.builder()
-                .firstName(firstName)
-                .lastName(lastName)
-                .build()));
+        var writer = new Writer();
+        writer.setFirstName(firstName);
+        writer.setLastName(lastName);
+        System.out.println(controller.createWriter(writer));
     }
 
     private static long getWriterId(BufferedReader reader) throws IOException {

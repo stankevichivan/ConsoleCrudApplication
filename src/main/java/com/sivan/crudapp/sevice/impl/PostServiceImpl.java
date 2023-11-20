@@ -1,8 +1,10 @@
 package com.sivan.crudapp.sevice.impl;
 
 import com.sivan.crudapp.model.Post;
-import com.sivan.crudapp.repository.JDBCPostRepository;
-import com.sivan.crudapp.repository.impl.JDBCPostRepositoryImpl;
+import com.sivan.crudapp.repository.LabelRepository;
+import com.sivan.crudapp.repository.PostRepository;
+import com.sivan.crudapp.repository.hibernate.HibernateLabelRepository;
+import com.sivan.crudapp.repository.hibernate.HibernatePostRepository;
 import com.sivan.crudapp.repository.impl.JDBCLabelRepositoryImpl;
 import com.sivan.crudapp.sevice.PostService;
 
@@ -12,10 +14,12 @@ import java.util.Optional;
 
 public class PostServiceImpl implements PostService {
 
-    JDBCPostRepository postRepository;
+    PostRepository postRepository;
+    LabelRepository labelRepository;
 
     public PostServiceImpl() {
-        this.postRepository = new JDBCPostRepositoryImpl();
+        this.postRepository = new HibernatePostRepository();
+        this.labelRepository = new HibernateLabelRepository();
     }
 
     @Override
@@ -42,34 +46,28 @@ public class PostServiceImpl implements PostService {
     @Override
     public Optional<Post> getById(Long id) {
         var result = postRepository.getById(id);
-        result.ifPresent(post -> post.setLabels(JDBCLabelRepositoryImpl.getInstance().getAllByPostId(post.getId())));
+        result.ifPresent(post -> post.setLabels(labelRepository.getAllByPostId(post.getId())));
         return result;
     }
 
     @Override
     public List<Post> getAll() {
         var posts = postRepository.getAll();
-        posts.forEach(post -> post.setLabels(JDBCLabelRepositoryImpl.getInstance().getAllByPostId(post.getId())));
+        posts.forEach(post -> post.setLabels(labelRepository.getAllByPostId(post.getId())));
         return posts;
     }
 
     @Override
     public Post addLabelToPost(Long postId, Long labelId) {
-        var added = JDBCLabelRepositoryImpl.getInstance().addLabelToPost(postId, labelId);
+        var added = labelRepository.addLabelToPost(postId, labelId);
         if (added) {
-            var post = getById(postId).orElse(null);
-            JDBCLabelRepositoryImpl.getInstance().getById(labelId).ifPresent(label -> {
-                if (Objects.nonNull(post) && Objects.nonNull(post.getLabels())) {
-                    post.getLabels().add(label);
-                }
-            });
-            return post;
+            return getById(postId).orElse(null);
         }
         return null;
     }
 
     @Override
-    public void deleteLabelFromPost(Long labelId) {
-        JDBCLabelRepositoryImpl.getInstance().deleteLabelFromPost(labelId);
+    public void deleteLabelFromPost(Long labelId, Long postId) {
+        labelRepository.deleteLabelFromPost(labelId, postId);
     }
 }

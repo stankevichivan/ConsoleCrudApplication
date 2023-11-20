@@ -3,10 +3,16 @@ package com.sivan.crudapp.sevice.impl;
 import com.sivan.crudapp.model.Label;
 import com.sivan.crudapp.model.Post;
 import com.sivan.crudapp.model.PostStatus;
-import com.sivan.crudapp.repository.JDBCPostRepository;
-import com.sivan.crudapp.repository.impl.JDBCLabelRepositoryImpl;
-import org.junit.jupiter.api.*;
-import org.mockito.*;
+import com.sivan.crudapp.repository.LabelRepository;
+import com.sivan.crudapp.repository.PostRepository;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,49 +21,45 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.mockStatic;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PostServiceImplTest {
 
     @Mock
-    JDBCPostRepository postRepository;
+    PostRepository postRepository;
     @Mock
-    JDBCLabelRepositoryImpl labelRepository;
+    LabelRepository labelRepository;
 
     @InjectMocks
     PostServiceImpl service = new PostServiceImpl();
 
-    static Post post;
+    static Post post = new Post();
     static List<Label> labels;
-    static Label label;
+    static Label label = new Label();
 
-    private static MockedStatic<JDBCLabelRepositoryImpl> mockedStatic;
 
     @BeforeAll
     static void beforeAll() {
-        mockedStatic = mockStatic(JDBCLabelRepositoryImpl.class);
-        label = Label.builder().id(1L).name("test").build();
-        labels = List.of(label, Label.builder().id(2L).name("test2").build());
-        post = Post.builder()
-                .id(1L)
-                .postStatus(PostStatus.ACTIVE)
-                .updated(LocalDateTime.now())
-                .content("content")
-                .created(LocalDateTime.now().minusDays(2))
-                .labels(labels)
-                .build();
-    }
+        label.setId(1L);
+        label.setName("test");
 
-    @AfterAll
-    static void afterAll() {
-        mockedStatic.close();
+        var label2 = new Label();
+        label.setId(2L);
+        label.setName("test2");
+        labels = List.of(label, label2);
+
+        post.setId(1L);
+        post.setPostStatus(PostStatus.ACTIVE);
+        post.setUpdated(LocalDateTime.now());
+        post.setCreated(LocalDateTime.now().minusDays(2));
+        post.setContent("content");
+        post.setLabels(labels);
     }
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        Mockito.reset(postRepository, labelRepository, JDBCLabelRepositoryImpl.class);
+        Mockito.reset(postRepository, labelRepository);
     }
 
     @Test
@@ -83,7 +85,6 @@ class PostServiceImplTest {
 
     @Test
     void getById() {
-        Mockito.when(JDBCLabelRepositoryImpl.getInstance()).thenReturn(labelRepository);
         Mockito.when(labelRepository.getAllByPostId(anyLong())).thenReturn(labels);
         Mockito.when(postRepository.getById(anyLong())).thenReturn(Optional.of(post));
         var post = service.getById(1L);
@@ -92,7 +93,6 @@ class PostServiceImplTest {
 
     @Test
     void getAll() {
-        Mockito.when(JDBCLabelRepositoryImpl.getInstance()).thenReturn(labelRepository);
         Mockito.when(labelRepository.getAllByPostId(anyLong())).thenReturn(labels);
         Mockito.when(postRepository.getAll()).thenReturn(List.of(post, post));
         var posts = service.getAll();
@@ -101,9 +101,9 @@ class PostServiceImplTest {
 
     @Test
     void addLabelToPost() {
-        Mockito.when(JDBCLabelRepositoryImpl.getInstance()).thenReturn(labelRepository);
         Mockito.when(labelRepository.addLabelToPost(anyLong(), anyLong())).thenReturn(true);
         Mockito.when(labelRepository.getById(anyLong())).thenReturn(Optional.of(label));
+        Mockito.when(labelRepository.getAllByPostId(anyLong())).thenReturn(labels);
         Mockito.when(postRepository.getById(anyLong())).thenReturn(Optional.of(PostServiceImplTest.post));
         var post = service.addLabelToPost(1L, 1L);
         assertThat(post.getLabels()).isNotEmpty();
@@ -111,7 +111,6 @@ class PostServiceImplTest {
 
     @Test
     void addLabelToPostWithNull() {
-        Mockito.when(JDBCLabelRepositoryImpl.getInstance()).thenReturn(labelRepository);
         Mockito.when(labelRepository.addLabelToPost(anyLong(), anyLong())).thenReturn(false);
         var post = service.addLabelToPost(1L, 1L);
         assertThat(post).isNull();

@@ -4,10 +4,10 @@ import com.sivan.crudapp.model.Post;
 
 import java.util.List;
 
-public interface JDBCPostRepository extends JDBCGenericRepository<Post, Long> {
+public interface PostRepository extends GenericRepository<Post, Long> {
     boolean addPostToWriter(Long postId, Long writerId);
 
     List<Post> getAllByWriterId(Long writerId);
 
-    void deletePostFromWriter(Long postId);
+    void deletePostFromWriter(Long postId, Long writerId);
 }

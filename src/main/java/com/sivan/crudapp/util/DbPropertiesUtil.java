@@ -1,4 +1,4 @@
-package com.sivan.crudapp.db.util;
+package com.sivan.crudapp.util;
 
 import java.io.IOException;
 import java.io.InputStream;

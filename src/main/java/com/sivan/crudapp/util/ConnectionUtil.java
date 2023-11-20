@@ -1,6 +1,4 @@
-package com.sivan.crudapp.db;
-
-import com.sivan.crudapp.db.util.DbPropertiesUtil;
+package com.sivan.crudapp.util;
 
 import java.lang.reflect.Proxy;
 import java.sql.Connection;
@@ -11,7 +9,7 @@ import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-public final class ConnectionPool {
+public final class ConnectionUtil {
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
     public static final String URL = "url";
@@ -25,7 +23,7 @@ public final class ConnectionPool {
         initConnectionPool();
     }
 
-    private ConnectionPool() {
+    private ConnectionUtil() {
     }
 
     public static Connection get() {
@@ -64,7 +62,7 @@ public final class ConnectionPool {
         for (int i = 0; i < size; i++) {
             Connection connection = open();
 
-            var proxyConnection = (Connection) Proxy.newProxyInstance(ConnectionPool.class.getClassLoader(),
+            var proxyConnection = (Connection) Proxy.newProxyInstance(ConnectionUtil.class.getClassLoader(),
                     new Class[]{Connection.class},
                     (proxy, method, args) ->
                             method.getName().equals("close")

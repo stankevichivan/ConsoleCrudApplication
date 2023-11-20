@@ -58,8 +58,10 @@ public class LabelView {
         var labelId = reader.readLine();
         System.out.println(ENTER_NAME);
         var labelName = reader.readLine();
-        System.out.println(
-                labelController.updateLabel(Label.builder().id(Long.parseLong(labelId)).name(labelName).build()));
+        var label = new Label();
+        label.setId(Long.parseLong(labelId));
+        label.setName(labelName);
+        System.out.println(labelController.updateLabel(label));
     }
 
     private void getLabelById(BufferedReader reader) throws IOException {
@@ -76,6 +78,8 @@ public class LabelView {
     private void createLabel(BufferedReader reader) throws IOException {
         System.out.println(ENTER_NAME);
         var name = reader.readLine();
-        System.out.println(labelController.createLabel(Label.builder().name(name).build()));
+        Label label = new Label();
+        label.setName(name);
+        System.out.println(labelController.createLabel(label));
     }
 }

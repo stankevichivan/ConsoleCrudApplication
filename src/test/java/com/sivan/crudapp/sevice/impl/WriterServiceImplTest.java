@@ -3,63 +3,61 @@ package com.sivan.crudapp.sevice.impl;
 import com.sivan.crudapp.model.Post;
 import com.sivan.crudapp.model.PostStatus;
 import com.sivan.crudapp.model.Writer;
-import com.sivan.crudapp.repository.JDBCPostRepository;
-import com.sivan.crudapp.repository.JDBCWriterRepository;
-import com.sivan.crudapp.repository.impl.JDBCLabelRepositoryImpl;
-import org.junit.jupiter.api.*;
-import org.mockito.*;
+import com.sivan.crudapp.repository.PostRepository;
+import com.sivan.crudapp.repository.WriterRepository;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.mockStatic;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class WriterServiceImplTest {
     @Mock
-    JDBCWriterRepository writerRepository;
+    WriterRepository writerRepository;
     @Mock
-    JDBCPostRepository postRepository;
+    PostRepository postRepository;
 
     @InjectMocks
     WriterServiceImpl service = new WriterServiceImpl();
 
-    static Writer writer;
-    static Post post;
-    static List<Post> posts;
-    private static MockedStatic<JDBCLabelRepositoryImpl> mockedStatic;
+    static Writer writer = new Writer();
+    static Post post = new Post();
+    static List<Post> posts = new ArrayList<>();
 
     @BeforeAll
     static void beforeAll() {
-        mockedStatic = mockStatic(JDBCLabelRepositoryImpl.class);
-        writer = Writer.builder()
-                .id(1L)
-                .firstName("ivan")
-                .lastName("stankevich")
-                .build();
-        post = Post.builder()
-                .id(1L)
-                .postStatus(PostStatus.ACTIVE)
-                .updated(LocalDateTime.now())
-                .content("content")
-                .created(LocalDateTime.now().minusDays(2))
-                .build();
         posts = List.of(post, post);
-    }
 
-    @AfterAll
-    static void afterAll() {
-        mockedStatic.close();
+        writer.setId(1L);
+        writer.setFirstName("ivan");
+        writer.setLastName("stankevich");
+        writer.setPosts(posts);
+
+        post.setId(1L);
+        post.setPostStatus(PostStatus.ACTIVE);
+        post.setUpdated(LocalDateTime.now());
+        post.setCreated(LocalDateTime.now().minusDays(2));
+        post.setContent("content");
+
     }
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        Mockito.reset(postRepository, writerRepository, JDBCLabelRepositoryImpl.class);
+        Mockito.reset(postRepository, writerRepository);
     }
 
 
@@ -87,7 +85,6 @@ class WriterServiceImplTest {
 
     @Test
     void getById() {
-        Mockito.when(postRepository.getAllByWriterId(anyLong())).thenReturn(posts);
         Mockito.when(writerRepository.getById(anyLong())).thenReturn(Optional.of(writer));
         var writer = service.getById(1L);
         writer.ifPresent(value -> assertThat(value.getPosts()).hasSize(2));

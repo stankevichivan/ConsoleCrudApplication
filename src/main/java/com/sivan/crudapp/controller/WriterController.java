@@ -39,7 +39,7 @@ public class WriterController {
         return writerService.addPostToWriter(writerId, postId);
     }
 
-    public void deletePostFromWriter(long postId) {
-        writerService.deletePostFromWriter(postId);
+    public void deletePostFromWriter(long postId, long writerId) {
+        writerService.deletePostFromWriter(postId, writerId);
     }
 }

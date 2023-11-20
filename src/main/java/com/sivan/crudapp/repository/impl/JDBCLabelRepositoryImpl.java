@@ -1,9 +1,9 @@
 package com.sivan.crudapp.repository.impl;
 
-import com.sivan.crudapp.db.ConnectionPool;
+import com.sivan.crudapp.util.ConnectionUtil;
 import com.sivan.crudapp.exception.JDBCRepositoryException;
 import com.sivan.crudapp.model.Label;
-import com.sivan.crudapp.repository.JDBCLabelRepository;
+import com.sivan.crudapp.repository.LabelRepository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class JDBCLabelRepositoryImpl implements JDBCLabelRepository {
+public class JDBCLabelRepositoryImpl implements LabelRepository {
 
     private static JDBCLabelRepositoryImpl INSTANCE;
 
@@ -63,7 +63,7 @@ public class JDBCLabelRepositoryImpl implements JDBCLabelRepository {
 
     @Override
     public Label create(Label label) {
-        try (var connection = ConnectionPool.get();
+        try (var connection = ConnectionUtil.get();
              var preparedStatement = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, label.getName());
             preparedStatement.executeUpdate();
@@ -79,7 +79,7 @@ public class JDBCLabelRepositoryImpl implements JDBCLabelRepository {
 
     @Override
     public Optional<Label> getById(Long id) {
-        try (var connection = ConnectionPool.get();
+        try (var connection = ConnectionUtil.get();
              var preparedStatement = connection.prepareStatement(FIND_BY_ID)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -94,7 +94,7 @@ public class JDBCLabelRepositoryImpl implements JDBCLabelRepository {
 
     @Override
     public List<Label> getAll() {
-        try (var connection = ConnectionPool.get();
+        try (var connection = ConnectionUtil.get();
              var preparedStatement = connection.prepareStatement(FIND_ALL)) {
             ResultSet resultSet = preparedStatement.executeQuery();
             var labels = new ArrayList<Label>();
@@ -109,7 +109,7 @@ public class JDBCLabelRepositoryImpl implements JDBCLabelRepository {
 
     @Override
     public List<Label> getAllByPostId(Long postId) {
-        try (var connection = ConnectionPool.get();
+        try (var connection = ConnectionUtil.get();
              var preparedStatement = connection.prepareStatement(FIND_ALL_BY_POST_ID)) {
             preparedStatement.setLong(1, postId);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -124,8 +124,8 @@ public class JDBCLabelRepositoryImpl implements JDBCLabelRepository {
     }
 
     @Override
-    public void deleteLabelFromPost(Long labelId) {
-        try (var connection = ConnectionPool.get();
+    public void deleteLabelFromPost(Long labelId, Long postId) {
+        try (var connection = ConnectionUtil.get();
              var preparedStatement = connection.prepareStatement(DELETE_LABEL_FROM_POST)) {
             preparedStatement.setLong(1, labelId);
             preparedStatement.executeUpdate();
@@ -136,7 +136,7 @@ public class JDBCLabelRepositoryImpl implements JDBCLabelRepository {
 
     @Override
     public boolean update(Label label) {
-        try (var connection = ConnectionPool.get();
+        try (var connection = ConnectionUtil.get();
              var preparedStatement = connection.prepareStatement(UPDATE)) {
             preparedStatement.setString(1, label.getName());
             preparedStatement.setLong(2, label.getId());
@@ -148,7 +148,7 @@ public class JDBCLabelRepositoryImpl implements JDBCLabelRepository {
 
     @Override
     public boolean deleteById(Long id) {
-        try (var connection = ConnectionPool.get();
+        try (var connection = ConnectionUtil.get();
              var preparedStatement = connection.prepareStatement(DELETE_BY_ID)) {
             preparedStatement.setLong(1, id);
             return preparedStatement.executeUpdate() > 0;
@@ -159,7 +159,7 @@ public class JDBCLabelRepositoryImpl implements JDBCLabelRepository {
 
     @Override
     public void deleteAll() {
-        try (var connection = ConnectionPool.get();
+        try (var connection = ConnectionUtil.get();
              var preparedStatement = connection.prepareStatement(DELETE_ALL)) {
             preparedStatement.execute();
         } catch (SQLException e) {
@@ -169,7 +169,7 @@ public class JDBCLabelRepositoryImpl implements JDBCLabelRepository {
 
     @Override
     public boolean addLabelToPost(Long postId, Long labelId) {
-        try (var connection = ConnectionPool.get();
+        try (var connection = ConnectionUtil.get();
              var preparedStatement = connection.prepareStatement(ADD_LABEL_TO_POST)) {
             preparedStatement.setLong(1, postId);
             preparedStatement.setLong(2, labelId);
@@ -180,9 +180,9 @@ public class JDBCLabelRepositoryImpl implements JDBCLabelRepository {
     }
 
     private static Label createLabel(ResultSet resultSet) throws SQLException {
-        return Label.builder()
-                .id(resultSet.getLong("id"))
-                .name(resultSet.getString("name"))
-                .build();
+        Label label = new Label();
+        label.setId(resultSet.getLong("id"));
+        label.setName(resultSet.getString("name"));
+        return label;
     }
 }

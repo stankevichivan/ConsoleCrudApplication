@@ -1,9 +1,11 @@
 package com.sivan.crudapp.repository;
 
+import com.sivan.crudapp.model.Label;
+
 import java.util.List;
 import java.util.Optional;
 
-public interface JDBCGenericRepository<T, ID> {
+public interface GenericRepository<T, ID> {
     T create(T t);
 
     Optional<T> getById(ID id);

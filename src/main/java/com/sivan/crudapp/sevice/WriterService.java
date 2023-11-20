@@ -5,5 +5,5 @@ import com.sivan.crudapp.model.Writer;
 public interface WriterService extends Service<Writer, Long> {
     Writer addPostToWriter(Long writerId, Long postId);
 
-    void deletePostFromWriter(Long postId);
+    void deletePostFromWriter(Long postId, Long writerId);
 }

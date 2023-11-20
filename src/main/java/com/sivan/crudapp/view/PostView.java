@@ -51,7 +51,9 @@ public class PostView {
     private void deleteLabelFromPost(BufferedReader reader) throws IOException {
         System.out.println(ENTER_LABEL_ID);
         var labelId = reader.readLine();
-        postController.deleteLabelFromPost(Long.valueOf(labelId));
+        System.out.println("Enter post Id");
+        var postId = reader.readLine();
+        postController.deleteLabelFromPost(Long.valueOf(labelId), Long.valueOf(postId));
     }
 
     private void addLabelToPost(BufferedReader reader) throws IOException {
@@ -71,12 +73,12 @@ public class PostView {
         System.out.println("Enter post content");
         var postContent = reader.readLine();
         var postStatus = getPostStatus(reader);
-        postController.updatePost(Post.builder().
-                id(postId)
-                .content(postContent)
-                .postStatus(postStatus)
-                .updated(LocalDateTime.now())
-                .build());
+        var post = new Post();
+        post.setId(postId);
+        post.setContent(postContent);
+        post.setPostStatus(postStatus);
+        post.setUpdated(LocalDateTime.now());
+        postController.updatePost(post);
     }
 
     private void getAllPosts() {
@@ -95,13 +97,12 @@ public class PostView {
         var content = reader.readLine();
 
         var postStatus = getPostStatus(reader);
-
-        System.out.println(postController.createPost(Post.builder()
-                .content(content)
-                .postStatus(postStatus)
-                .created(LocalDateTime.now())
-                .updated(LocalDateTime.now())
-                .build()));
+        var post = new Post();
+        post.setContent(content);
+        post.setPostStatus(postStatus);
+        post.setCreated(LocalDateTime.now());
+        post.setUpdated(LocalDateTime.now());
+        System.out.println(postController.createPost(post));
     }
 
     private static PostStatus getPostStatus(BufferedReader reader) throws IOException {

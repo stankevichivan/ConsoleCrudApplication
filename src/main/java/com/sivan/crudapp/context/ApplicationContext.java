@@ -1,6 +1,6 @@
 package com.sivan.crudapp.context;
 
-import com.sivan.crudapp.db.ConnectionPool;
+import com.sivan.crudapp.util.ConnectionUtil;
 import com.sivan.crudapp.view.LabelView;
 import com.sivan.crudapp.view.PostView;
 import com.sivan.crudapp.view.WriterView;
@@ -43,8 +43,6 @@ public class ApplicationContext {
             }
         } catch (IOException e) {
             System.out.println("Error with console input");
-        } finally {
-            ConnectionPool.closeRealPool();
         }
     }
 }

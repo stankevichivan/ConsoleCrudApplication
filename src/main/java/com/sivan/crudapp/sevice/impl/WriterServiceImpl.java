@@ -1,10 +1,10 @@
 package com.sivan.crudapp.sevice.impl;
 
 import com.sivan.crudapp.model.Writer;
-import com.sivan.crudapp.repository.JDBCPostRepository;
-import com.sivan.crudapp.repository.JDBCWriterRepository;
-import com.sivan.crudapp.repository.impl.JDBCPostRepositoryImpl;
-import com.sivan.crudapp.repository.impl.JDBCWriterRepositoryImpl;
+import com.sivan.crudapp.repository.PostRepository;
+import com.sivan.crudapp.repository.WriterRepository;
+import com.sivan.crudapp.repository.hibernate.HibernatePostRepository;
+import com.sivan.crudapp.repository.hibernate.HibernateWriterRepository;
 import com.sivan.crudapp.sevice.WriterService;
 
 import java.util.List;
@@ -12,12 +12,12 @@ import java.util.Optional;
 
 public class WriterServiceImpl implements WriterService {
 
-    JDBCWriterRepository repository;
-    JDBCPostRepository postRepository;
+    WriterRepository repository;
+    PostRepository postRepository;
 
     public WriterServiceImpl() {
-        this.repository = new JDBCWriterRepositoryImpl();
-        this.postRepository = new JDBCPostRepositoryImpl();
+        this.repository = new HibernateWriterRepository();
+        this.postRepository = new HibernatePostRepository();
     }
 
     @Override
@@ -42,16 +42,12 @@ public class WriterServiceImpl implements WriterService {
 
     @Override
     public Optional<Writer> getById(Long id) {
-        var writer = repository.getById(id);
-        writer.ifPresent(value -> value.setPosts(postRepository.getAllByWriterId(value.getId())));
         return repository.getById(id);
     }
 
     @Override
     public List<Writer> getAll() {
-        var writers = repository.getAll();
-        writers.forEach(writer -> writer.setPosts(postRepository.getAllByWriterId(writer.getId())));
-        return writers;
+        return repository.getAll();
     }
 
     @Override
@@ -64,7 +60,7 @@ public class WriterServiceImpl implements WriterService {
     }
 
     @Override
-    public void deletePostFromWriter(Long postId) {
-        postRepository.deletePostFromWriter(postId);
+    public void deletePostFromWriter(Long postId, Long writerId) {
+        postRepository.deletePostFromWriter(postId, writerId);
     }
 }

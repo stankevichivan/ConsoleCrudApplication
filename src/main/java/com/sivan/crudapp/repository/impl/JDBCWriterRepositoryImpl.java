@@ -1,9 +1,10 @@
 package com.sivan.crudapp.repository.impl;
 
-import com.sivan.crudapp.db.ConnectionPool;
+import com.sivan.crudapp.model.Label;
+import com.sivan.crudapp.util.ConnectionUtil;
 import com.sivan.crudapp.exception.JDBCRepositoryException;
 import com.sivan.crudapp.model.Writer;
-import com.sivan.crudapp.repository.JDBCWriterRepository;
+import com.sivan.crudapp.repository.WriterRepository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class JDBCWriterRepositoryImpl implements JDBCWriterRepository {
+public class JDBCWriterRepositoryImpl implements WriterRepository {
 
     public static final String INSERT = """
             insert into writers (first_name, last_name) VALUES (?, ?);
@@ -35,7 +36,7 @@ public class JDBCWriterRepositoryImpl implements JDBCWriterRepository {
 
     @Override
     public Writer create(Writer writer) {
-        try (var connection = ConnectionPool.get();
+        try (var connection = ConnectionUtil.get();
              var preparedStatement = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, writer.getFirstName());
             preparedStatement.setString(2, writer.getLastName());
@@ -52,7 +53,7 @@ public class JDBCWriterRepositoryImpl implements JDBCWriterRepository {
 
     @Override
     public Optional<Writer> getById(Long id) {
-        try (var connection = ConnectionPool.get();
+        try (var connection = ConnectionUtil.get();
              var preparedStatement = connection.prepareStatement(FIND_BY_ID)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -67,7 +68,7 @@ public class JDBCWriterRepositoryImpl implements JDBCWriterRepository {
 
     @Override
     public List<Writer> getAll() {
-        try (var connection = ConnectionPool.get();
+        try (var connection = ConnectionUtil.get();
              var preparedStatement = connection.prepareStatement(FIND_ALL)) {
             ResultSet resultSet = preparedStatement.executeQuery();
             var writers = new ArrayList<Writer>();
@@ -82,7 +83,7 @@ public class JDBCWriterRepositoryImpl implements JDBCWriterRepository {
 
     @Override
     public boolean update(Writer writer) {
-        try (var connection = ConnectionPool.get();
+        try (var connection = ConnectionUtil.get();
              var preparedStatement = connection.prepareStatement(UPDATE)) {
             preparedStatement.setString(1, writer.getFirstName());
             preparedStatement.setString(2, writer.getLastName());
@@ -95,7 +96,7 @@ public class JDBCWriterRepositoryImpl implements JDBCWriterRepository {
 
     @Override
     public boolean deleteById(Long id) {
-        try (var connection = ConnectionPool.get();
+        try (var connection = ConnectionUtil.get();
              var preparedStatement = connection.prepareStatement(DELETE_BY_ID)) {
             preparedStatement.setLong(1, id);
             return preparedStatement.executeUpdate() > 0;
@@ -106,7 +107,7 @@ public class JDBCWriterRepositoryImpl implements JDBCWriterRepository {
 
     @Override
     public void deleteAll() {
-        try (var connection = ConnectionPool.get();
+        try (var connection = ConnectionUtil.get();
              var preparedStatement = connection.prepareStatement(DELETE_ALL)) {
             preparedStatement.execute();
         } catch (SQLException e) {
@@ -115,10 +116,11 @@ public class JDBCWriterRepositoryImpl implements JDBCWriterRepository {
     }
 
     private Writer createWriter(ResultSet resultSet) throws SQLException {
-        return Writer.builder()
-                .id(resultSet.getLong("id"))
-                .firstName(resultSet.getString("first_name"))
-                .lastName(resultSet.getString("last_name"))
-                .build();
+        return new Writer();
+        //        return Writer.builder()
+//                .id(resultSet.getLong("id"))
+//                .firstName(resultSet.getString("first_name"))
+//                .lastName(resultSet.getString("last_name"))
+//                .build();
     }
 }
